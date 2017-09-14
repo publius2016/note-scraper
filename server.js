@@ -10,7 +10,8 @@ var app = express();
 
 
 mongoose.Promise = Promise;
-mongoose.connect("mongodb://localhost/politiscraper");
+// mongoose.connect("mongodb://localhost/politiscraper");
+mongoose.connect("mongodb://heroku_xn79311z:h5jdrnq70898n4bpu2ea2oump9@ds123084.mlab.com:23084/heroku_xn79311z");
 var db = mongoose.connection;
 
 
@@ -39,6 +40,8 @@ db.once("open", function() {
   console.log("Mongoose connection successful.");
 });
 
-app.listen(3000, function() {
+var PORT = process.env.PORT || 3000;
+
+app.listen(PORT, function() {
   console.log("App running on port 3000!");
 });
