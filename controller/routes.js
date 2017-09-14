@@ -4,26 +4,36 @@ module.exports = (app, request, bodyParser, cheerio, db) => {
   var Article = require("./../models/Article.js");
 
   app.get("/scrape", (req, res) => {
+
     request("http://www.realclearpolitics.com/", (error, response, html) => {
-      var $ = cheerio.load(html);
+      if (error) {
+        console.log(error);
+        res.send({message: "Scrape Unsuccessful"});
+      } else {
+        var articleCounter = 0;
+        var $ = cheerio.load(html);
+        $(".post").each(function(i, element) {
+          var result = {};
 
-      $(".post").each(function(i, element) {
-        var result = {};
+          result.title = $(element).find("a").text();
+          result.link = $(element).find("a").attr("href");
 
-        result.title = $(element).find("a").text();
-        result.link = $(element).find("a").attr("href");
+          var articles = new Article(result);
 
-        var articles = new Article(result);
+          articles.save(function (err, doc) {
+            if (err) {
+              console.log("Save Unsuccessful");
 
-        articles.save(function (err, doc) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log(doc);
-          }
+              // console.log(err);
+            } else {
+              console.log("Save Successful");
+              articleCounter++;
+            }
 
-        }); // END CALLBACK ON SAVE
-      }); // END EACH
+          }); // END CALLBACK ON SAVE
+        }); // END EACH
+        res.send({message: "Scrape Successful", counter: articleCounter});
+      } // END IF/ELSE FOR REQUEST
     }); // END REQUEST
   }); // END APP.GET FOR SCRAPE ROUTE
 
@@ -68,4 +78,87 @@ module.exports = (app, request, bodyParser, cheerio, db) => {
       }
     });
   }); // END APP.GET FOR SAVED ARTICLES
+
+  app.put("/unsaveArticle/:id", (req, res) => {
+    Article.findOneAndUpdate(
+      {"_id": req.params.id},
+      {
+        $set:
+          {
+            "saved": false
+          }
+      }, (err, doc) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send({message: "Article Unsaved"});
+        }
+      }
+    ); // END ARTICLE.UPDATE
+  }); // END APP.GET FOR UNSAVEARTICLES
+
+  app.post("/note/:id", (req, res) => {
+    console.log(req.body);
+    console.log(req.params.id);
+    var newNote = new Note(req.body);
+    newNote.save(function(error, doc) {
+      // Log any errors
+      if (error) {
+        console.log(error);
+      }
+      // Otherwise
+      else {
+        // Use the article id to find and update it's note
+        Article.findOneAndUpdate({ "_id": req.params.id },
+          {
+            $push:
+              {
+                "note": doc._id
+              }
+          })
+        // Execute the above query
+        .exec(function(err, doc) {
+          // Log any errors
+          if (err) {
+            console.log(err);
+            res.send({ message: "Error Saving Note"});
+          }
+          else {
+            // Or send the document to the browser
+            res.send({ message: "Successfully Saved Note"});
+          }
+        });
+      }
+    });
+  }); // END APP.POST FOR NOTEMAKER ROUTE
+
+  app.get("/articles/:id", function(req, res) {
+    console.log(req.params.id);
+    // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
+    Article.findOne({ "_id": req.params.id })
+    // ..and populate all of the notes associated with it
+    .populate("note")
+    // now, execute our query
+    .exec(function(error, doc) {
+      // Log any errors
+      if (error) {
+        console.log(error);
+      }
+      // Otherwise, send the doc to the browser as a json object
+      else {
+        res.json(doc);
+      }
+    });
+  }); // END APP.GET FOR ARTICLENOTE ROUTE
+
+  app.put("/deletenote/:id", (req, res) => {
+    Note.remove({ "_id": req.params.id}, (err, doc) => {
+      if (err) {
+        console.log(err);
+        res.send({message: "Error Deleting Note"});
+      } else {
+        res.send({message: "Note Deleted Successfully"});
+      }
+    }); // END NOTEREMOVE FUNCTION
+  }); // END APP.PUT FOR DELETENOTE ROUTE
 }; // END MODULE.EXPORTSs

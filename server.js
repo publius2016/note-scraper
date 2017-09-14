@@ -13,23 +13,22 @@ mongoose.Promise = Promise;
 mongoose.connect("mongodb://localhost/politiscraper");
 var db = mongoose.connection;
 
-require("./controller/routes.js")(app, request, bodyParser, cheerio, db);
 
 app.use(express.static("public"));
 app.use(logger("dev"));
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
+// app.use(bodyParser.urlencoded({
+//   extended: false
+// }));
 
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.text());
-// app.use(bodyParser.json({ type: "application/vnd.api+json" }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.text());
+app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 // app.use(express.static("views/assets"));
 // app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 // app.set("view engine", "handlebars");
 
-
+require("./controller/routes.js")(app, request, bodyParser, cheerio, db);
 
 
 db.on("error", function(error) {

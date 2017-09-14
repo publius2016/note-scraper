@@ -1,0 +1,95 @@
+.navbar .scrape {
+  background-color: #8b0000;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.navbar-default .navbar-nav>li>a:hover {
+  background-color: #DC143C;
+}
+
+.navbar {
+  background-color: #4169e1;
+}
+
+.navbar-header .navbar-brand {
+  color: #fff;
+}
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
+  background-color: #fff;
+}
+
+.navbar-default .navbar-nav>li>a, .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:hover {
+  color: #fff;
+}
+
+#myModal .modal-body {
+  text-align: center;
+  font-size: 3em;
+}
+
+#headline {
+  /*height: 400px;*/
+  padding: 5% 0 5% 0;
+  background-image: url("../img/newspaper.jpg");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+#headline h1 {
+  text-align: center;
+  color: #fff;
+  font-size: 400%;
+  font-family: "Times New Roman";
+}
+
+#headline p {
+  text-align: center;
+  color: #fff;
+  font-size: 1.5em;
+  font-family: "Times New Roman";
+}
+
+
+.article {
+  width: 90%;
+  margin: 30px auto;
+  padding: 20px 15px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  background-color: #4169e1;
+  overflow-y: auto;
+}
+
+.article a {
+  color: #fff;
+  font-size: 1.3em;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  display: block;
+}
+
+.article button {
+  margin: 10px auto 0 auto;
+  background-color: #3CB371;
+  font-weight: bold;
+  border: 1px solid #fff;
+  border-radius: 10px;
+  box-shadow: 1px 1px 2px #000;
+  color: #fff;
+  padding: 7px 25px;
+  display: block;
+}
+
+.article button:hover {
+  box-shadow: none;
+  background-color: #2E8B57;
+}
+
+@media screen and (max-width: 500px) {
+
+
+}
