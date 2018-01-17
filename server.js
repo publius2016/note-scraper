@@ -10,7 +10,7 @@ var app = express();
 
 
 
-mongoose.connect("mongodb://localhost/politiscraper");
+mongoose.connect("mongodb://heroku_xn79311z:h5jdrnq70898n4bpu2ea2oump9@ds123084.mlab.com:23084/heroku_xn79311z");
 var db = mongoose.connection;
 
 
