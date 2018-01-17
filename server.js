@@ -9,10 +9,10 @@ var exphbs = require("express-handlebars");
 var app = express();
 
 
-mongoose.Promise = Promise;
-// mongoose.connect("mongodb://localhost/politiscraper");
-mongoose.connect("mongodb://heroku_xn79311z:h5jdrnq70898n4bpu2ea2oump9@ds123084.mlab.com:23084/heroku_xn79311z");
+
+mongoose.connect("mongodb://localhost/politiscraper");
 var db = mongoose.connection;
+
 
 
 app.use(express.static("public"));

@@ -9,7 +9,7 @@ $(function () {
   var articleArray;
   function articleMaker (data) {
     $("#articleHolder").empty();
-    for (var i = 0; i < data.length; i++) {
+    for (var i = data.length - 1; i >= 0; i--) {
       if (data[i].saved == false) {
         var article = "<div class='article'><a href='" + data[i].link + "' target='_blank'>" + data[i].title + "</a><button class='saveArticle' data-id='" + data[i]._id + "'>Save</button></div>";
         $("#articleHolder").append(article);
@@ -53,9 +53,14 @@ $(function () {
   });
 
   $(".home").on("click", () => {
+
     $.ajax({
       method: "GET",
-      url: "/articles"
+      url: "/articles",
+      data: {
+            name: "Manny",
+            occupation: "Tutor"
+            }
     }).done(function(articles) {
       console.log(articles);
       articleArray = articles;

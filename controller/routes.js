@@ -4,37 +4,96 @@ module.exports = (app, request, bodyParser, cheerio, db) => {
   var Article = require("./../models/Article.js");
 
   app.get("/scrape", (req, res) => {
+    console.log(req.body.name);
+    console.log(req.body.occupation);
 
-    request("http://www.realclearpolitics.com/", (error, response, html) => {
-      if (error) {
-        console.log(error);
-        res.send({message: "Scrape Unsuccessful"});
-      } else {
-        var articleCounter = 0;
-        var $ = cheerio.load(html);
-        $(".post").each(function(i, element) {
-          var result = {};
+    ////////////////////////////////////////
+    // UPDATED SCRAPING CODE WITH PROMISE //
+    ////////////////////////////////////////
 
-          result.title = $(element).find("a").text();
-          result.link = $(element).find("a").attr("href");
+    var promise = new Promise((resolve, reject) => {
 
-          var articles = new Article(result);
+      request("http://www.realclearpolitics.com/", (error, response, html) => {
+        if (error) {
+          console.log(error);
+          res.send({message: "Scrape Unsuccessful"});
+        } else {
+          var articleCounter = 0;
+          var $ = cheerio.load(html);
+          var allResults = [];
 
-          articles.save(function (err, doc) {
-            if (err) {
-              console.log("Save Unsuccessful");
+          $(".post").each(function(i, element) {
 
-              // console.log(err);
-            } else {
-              console.log("Save Successful");
-              articleCounter++;
-            }
+            var result = {};
 
-          }); // END CALLBACK ON SAVE
-        }); // END EACH
-        res.send({message: "Scrape Successful", counter: articleCounter});
-      } // END IF/ELSE FOR REQUEST
-    }); // END REQUEST
+            result.title = $(element).find("a").text();
+            result.link = $(element).find("a").attr("href");
+
+            allResults.push(result);
+
+            // var articles = new Article(result);
+            //
+            // articles.save(function (err, doc) {
+            //   if (err) {
+            //     console.log("Save Unsuccessful");
+            //
+            //     // console.log(err);
+            //   } else {
+            //     console.log("Save Successful");
+            //     articleCounter++;
+            //   }
+
+            // }); // END CALLBACK ON SAVE
+          }); // END EACH
+          resolve(allResults);
+          // res.send({message: "Scrape Successful", counter: articleCounter});
+        } // END IF/ELSE FOR REQUEST
+      }); // END REQUEST
+
+    }); // END PROMISE OBJECT INSTANTIATION
+
+    promise.then((data) => {
+      console.log("Scrape Results Array: " + JSON.stringify(data));
+      res.send({message: "Scrape Successful"});
+    });
+
+    ////////////////////////////////////////////
+    // ORIGINAL SCRAPING CODE WITHOUT PROMISE //
+    ////////////////////////////////////////////
+
+    // request("http://www.realclearpolitics.com/", (error, response, html) => {
+    //   if (error) {
+    //     console.log(error);
+    //     res.send({message: "Scrape Unsuccessful"});
+    //   } else {
+    //     var articleCounter = 0;
+    //     var $ = cheerio.load(html);
+    //
+    //
+    //
+    //     $(".post").each(function(i, element) {
+    //       var result = {};
+    //
+    //       result.title = $(element).find("a").text();
+    //       result.link = $(element).find("a").attr("href");
+    //
+    //       var articles = new Article(result);
+    //
+    //       articles.save(function (err, doc) {
+    //         if (err) {
+    //           console.log("Save Unsuccessful");
+    //
+    //           // console.log(err);
+    //         } else {
+    //           console.log("Save Successful");
+    //           articleCounter++;
+    //         }
+    //
+    //       }); // END CALLBACK ON SAVE
+    //     }); // END EACH
+    //     res.send({message: "Scrape Successful", counter: articleCounter});
+    //   } // END IF/ELSE FOR REQUEST
+    // }); // END REQUEST
   }); // END APP.GET FOR SCRAPE ROUTE
 
   app.get("/articles", (req, res) => {
