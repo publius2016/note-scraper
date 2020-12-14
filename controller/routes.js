@@ -13,7 +13,7 @@ module.exports = (app, request, bodyParser, cheerio, db) => {
 
     var promise = new Promise((resolve, reject) => {
 
-      request("http://www.realclearpolitics.com/", (error, response, html) => {
+      request("http://www.realclearpolitics.com/", async(error, response, html) => {
         if (error) {
           console.log(error);
           res.send({message: "Scrape Unsuccessful"});
@@ -22,7 +22,7 @@ module.exports = (app, request, bodyParser, cheerio, db) => {
           var $ = cheerio.load(html);
           var allResults = [];
 
-          $(".post").each(function(i, element) {
+          await $(".post").each(function(i, element) {
 
             var result = {};
 
