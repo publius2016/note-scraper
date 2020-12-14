@@ -10,7 +10,7 @@ var app = express();
 
 
 
-mongoose.connect("mongodb://heroku_xn79311z:h5jdrnq70898n4bpu2ea2oump9@ds123084.mlab.com:23084/heroku_xn79311z");
+mongoose.connect(process.env.MONGODB_URI);
 var db = mongoose.connection;
 
 
