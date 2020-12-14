@@ -31,19 +31,19 @@ module.exports = (app, request, bodyParser, cheerio, db) => {
 
             allResults.push(result);
 
-            // var articles = new Article(result);
-            //
-            // articles.save(function (err, doc) {
-            //   if (err) {
-            //     console.log("Save Unsuccessful");
-            //
-            //     // console.log(err);
-            //   } else {
-            //     console.log("Save Successful");
-            //     articleCounter++;
-            //   }
+            var articles = new Article(result);
+            
+            articles.save(function (err, doc) {
+              if (err) {
+                console.log("Save Unsuccessful");
+            
+                // console.log(err);
+              } else {
+                console.log("Save Successful");
+                articleCounter++;
+              }
 
-            // }); // END CALLBACK ON SAVE
+            }); // END CALLBACK ON SAVE
           }); // END EACH
           resolve(allResults);
           // res.send({message: "Scrape Successful", counter: articleCounter});
